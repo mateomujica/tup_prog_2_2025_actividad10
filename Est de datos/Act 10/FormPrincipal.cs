@@ -5,7 +5,7 @@ namespace Act_10
     public partial class FormPrincipal : Form
     {
         CentroDeAtencion centro = new CentroDeAtencion();
-      
+
         public FormPrincipal()
         {
             InitializeComponent();
@@ -21,7 +21,7 @@ namespace Act_10
 
                 try
                 {
-                    fs=new FileStream(path,FileMode.Open, FileAccess.Read);
+                    fs = new FileStream(path, FileMode.Open, FileAccess.Read);
                     centro.ImportaCsvSolicitudesEntrantes(fs);
                 }
 
@@ -31,11 +31,11 @@ namespace Act_10
                 }
                 finally
                 {
-                    if  (fs != null) fs.Close();
+                    if (fs != null) fs.Close();
                 }
 
                 VerSolicitudesPendientes();
-            
+
             }
         }
 
@@ -47,12 +47,49 @@ namespace Act_10
 
             while (nodo != null)
             {
-                
+
                 lsbVerSolicitudesImportadas.Items.Add(nodo.Value);
 
-                nodo=nodo.Next;
+                nodo = nodo.Next;
 
             }
+        }
+
+        private void lsbVerSolicitudesImportadas_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Solicitud seleccionada = lsbVerSolicitudesImportadas.SelectedItem as Solicitud;
+
+            if (seleccionada != null)
+            {
+                lbSolicitudSeleccionada.Text= seleccionada.ToString();
+            }
+
+
+        }
+
+        private void btnConfirmarAtencion_Click(object sender, EventArgs e)
+        {
+            Solicitud seleccionada = lsbVerSolicitudesImportadas.SelectedItem as Solicitud;
+            if (seleccionada != null)
+            {
+                centro.Atender(seleccionada);
+
+                VerSolicitudesAAtender();
+                VerSolicitudesPendientes();
+
+                lsbVerSolicitudesImportadas.SelectedItem = null;
+                lbSolicitudSeleccionada.Text = "Seleccione un registro";
+
+            }
+
+        }
+
+
+        protected void VerSolicitudesAAtender()
+        {
+            lsbColaSolicitudesAAtender.Items.Clear();
+
+            lsbColaSolicitudesAAtender.Items.AddRange(centro.VerDescripcionAtencion());
         }
     }
 }

@@ -10,6 +10,7 @@ namespace Act_10.Models
     public class CentroDeAtencion
     {
         LinkedList<Solicitud> solicitudesEntrantes = new LinkedList<Solicitud>();
+        Queue<Solicitud> colaDeAtencion = new Queue<Solicitud>();
         public void ImportaCsvSolicitudesEntrantes(FileStream fs)
         {
             StreamReader sr = new StreamReader(fs);
@@ -28,9 +29,28 @@ namespace Act_10.Models
 
         }
 
+         
+        public void Atender (Solicitud solicitud)
+        {
+            solicitudesEntrantes.Remove(solicitud);
+
+            colaDeAtencion.Enqueue(solicitud);
+        }
         public LinkedListNode<Solicitud> GetSOlicitudesPendientes()
         {
             return solicitudesEntrantes.First;
+        }
+
+        public string[] VerDescripcionAtencion()
+        {
+            string[] descripciones = new string[colaDeAtencion.Count()];
+
+            int n = 0; 
+            foreach (Solicitud solicitud in colaDeAtencion)
+            {
+                descripciones[n++] = solicitud.ToString();
+            }
+            return descripciones;
         }
     }
 }
